@@ -1,9 +1,16 @@
 package gedis
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
-const Expire = "expire"
+const (
+	Expire = "expire"
+	Nx     = "nx"
+)
 
+// OperationAttr 属性操作
 type OperationAttr struct {
 	Name  string
 	Value interface{}
@@ -11,14 +18,14 @@ type OperationAttr struct {
 
 type OperationAttrs []*OperationAttr
 
-func (o OperationAttrs) Find(name string) interface{} {
+func (o OperationAttrs) Find(name string) *InterfaceResult {
 	for _, attr := range o {
 		if attr.Name == name {
-			return attr.Value
+			return NewInterfaceResult(attr.Value, nil)
 		}
 	}
 
-	return nil
+	return NewInterfaceResult(nil, fmt.Errorf("OperationAttrs found error: %s", name))
 }
 
 // WithExpire 设置过期时间
@@ -26,5 +33,12 @@ func WithExpire(t time.Duration) *OperationAttr {
 	return &OperationAttr{
 		Name:  Expire,
 		Value: t,
+	}
+}
+
+func WithNx() *OperationAttr {
+	return &OperationAttr{
+		Name:  Nx,
+		Value: struct{}{},
 	}
 }

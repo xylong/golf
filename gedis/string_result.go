@@ -9,16 +9,16 @@ func NewStringResult(result string, err error) *StringResult {
 	return &StringResult{Result: result, Err: err}
 }
 
-func (s *StringResult) Unwrap() string {
-	if s.Err != nil {
-		panic(s.Err)
+func (r *StringResult) Unwrap() string {
+	if r.Err != nil {
+		panic(r.Err)
 	}
-	return s.Result
+	return r.Result
 }
 
-func (s *StringResult) UnwrapOr(str string) string {
-	if s.Err != nil {
+func (r *StringResult) UnwrapOr(str string) string {
+	if r.Err != nil {
 		return str
 	}
-	return s.Result
+	return r.Result
 }

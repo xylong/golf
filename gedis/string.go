@@ -14,12 +14,14 @@ func NewStringOperation() *StringOperation {
 }
 
 // Set
-func (s *StringOperation) Set(key string, value interface{}, attrs ...*OperationAttr) *StringResult {
+func (s *StringOperation) Set(key string, value interface{}, attrs ...*OperationAttr) *InterfaceResult {
 	expiration := OperationAttrs(attrs).Find(Expire)
-	if expiration == nil {
-		expiration = 0
+	nx := OperationAttrs(attrs).Find(Nx).UnwrapOr(nil)
+
+	if nx != nil {
+		return NewInterfaceResult(Redis().SetNX(s.ctx, key, value, expiration.UnwrapOr(time.Second*0).(time.Duration)).Result())
 	}
-	return NewStringResult(Redis().Set(s.ctx, key, value, expiration.(time.Duration)).Result())
+	return NewInterfaceResult(Redis().Set(s.ctx, key, value, expiration.UnwrapOr(time.Second*0).(time.Duration)).Result())
 }
 
 // Get
