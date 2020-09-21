@@ -7,7 +7,12 @@ import (
 
 const (
 	Expire = "expire"
-	Nx     = "nx"
+	NX     = "nx"
+	XX     = "xx"
+)
+
+var (
+	empty = struct{}{}
 )
 
 // OperationAttr 属性操作
@@ -36,9 +41,16 @@ func WithExpire(t time.Duration) *OperationAttr {
 	}
 }
 
-func WithNx() *OperationAttr {
+func WithNX() *OperationAttr {
 	return &OperationAttr{
-		Name:  Nx,
-		Value: struct{}{},
+		Name:  NX,
+		Value: empty,
+	}
+}
+
+func WithXX() *OperationAttr {
+	return &OperationAttr{
+		Name:  XX,
+		Value: empty,
 	}
 }

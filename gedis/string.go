@@ -16,11 +16,15 @@ func NewStringOperation() *StringOperation {
 // Set
 func (s *StringOperation) Set(key string, value interface{}, attrs ...*OperationAttr) *InterfaceResult {
 	expiration := OperationAttrs(attrs).Find(Expire)
-	nx := OperationAttrs(attrs).Find(Nx).UnwrapOr(nil)
 
-	if nx != nil {
+	if nx := OperationAttrs(attrs).Find(NX).UnwrapOr(nil); nx != nil {
 		return NewInterfaceResult(Redis().SetNX(s.ctx, key, value, expiration.UnwrapOr(time.Second*0).(time.Duration)).Result())
 	}
+
+	if xx := OperationAttrs(attrs).Find(XX).UnwrapOr(nil); xx != nil {
+		return NewInterfaceResult(Redis().SetXX(s.ctx, key, value, expiration.UnwrapOr(time.Second*0).(time.Duration)).Result())
+	}
+
 	return NewInterfaceResult(Redis().Set(s.ctx, key, value, expiration.UnwrapOr(time.Second*0).(time.Duration)).Result())
 }
 

@@ -17,5 +17,5 @@ func main() {
 	}*/
 	fmt.Println(gedis.
 		NewStringOperation().
-		Set("name", "jj", gedis.WithExpire(15*time.Second), gedis.WithNx()))
+		Set("name", "jj", gedis.WithExpire(15*time.Second), gedis.WithXX()))
 }
