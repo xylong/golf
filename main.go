@@ -6,6 +6,12 @@ import (
 )
 
 func main() {
+	result := gedis.
+		NewStringOperation().
+		MGet("name", "age", "abc").
+		Iterate()
 
-	fmt.Println(gedis.NewStringOperation().Get("abc").UnwrapOr("xx"))
+	for result.HasNext() {
+		fmt.Println(result.Next())
+	}
 }
