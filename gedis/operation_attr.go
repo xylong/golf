@@ -41,6 +41,7 @@ func WithExpire(t time.Duration) *OperationAttr {
 	}
 }
 
+// WithNX
 func WithNX() *OperationAttr {
 	return &OperationAttr{
 		Name:  NX,
@@ -48,6 +49,7 @@ func WithNX() *OperationAttr {
 	}
 }
 
+// WithXX
 func WithXX() *OperationAttr {
 	return &OperationAttr{
 		Name:  XX,
