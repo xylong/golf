@@ -1,25 +1,25 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"golf/gedis"
+	"github.com/gin-gonic/gin"
 	"golf/lib"
-	"log"
-	"time"
+	"net/http"
 )
 
 func main() {
-	cache := gedis.NewSimpleCache(gedis.NewStringOperation(), time.Second*15)
 
-	id := 1
-	cache.Getter = func() string {
-		log.Println("from db")
-		model := lib.NewNew()
-		lib.Gorm.Where("id=?", id).Find(model)
-		b, _ := json.Marshal(model)
-		return string(b)
-	}
+	r := gin.New()
+	r.Handle(http.MethodGet, "news/:id", func(context *gin.Context) {
+		id := context.Param("id")
 
-	fmt.Println(cache.GetCache("new:1"))
+		cache := lib.NewsCache()
+		defer lib.ReleaseNewsCache(cache)
+
+		cache.Getter = lib.NewsDbGetter(id)
+		context.Header("Content-type", "application/json")
+		context.String(http.StatusOK, cache.GetCache(fmt.Sprintf("news:%s", id)).(string))
+	})
+
+	_ = r.Run()
 }
