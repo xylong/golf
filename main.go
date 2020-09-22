@@ -1,21 +1,25 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"golf/gedis"
+	"golf/lib"
+	"log"
 	"time"
 )
 
 func main() {
-	/*result := gedis.
-		NewStringOperation().
-		MGet("name", "age", "abc").
-		Iterate()
+	cache := gedis.NewSimpleCache(gedis.NewStringOperation(), time.Second*15)
 
-	for result.HasNext() {
-		fmt.Println(result.Next())
-	}*/
-	fmt.Println(gedis.
-		NewStringOperation().
-		Set("name", "jj", gedis.WithExpire(15*time.Second), gedis.WithXX()))
+	id := 1
+	cache.Getter = func() string {
+		log.Println("from db")
+		model := lib.NewNew()
+		lib.Gorm.Where("id=?", id).Find(model)
+		b, _ := json.Marshal(model)
+		return string(b)
+	}
+
+	fmt.Println(cache.GetCache("new:1"))
 }
