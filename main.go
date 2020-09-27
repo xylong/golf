@@ -19,8 +19,11 @@ func main() {
 		id := context.Param("id")
 		cache.Getter = lib.NewsDbGetter(id) // 当缓存不存在时，从此处获取数据
 		// 3.从缓存输出(如果没有缓存，上面的DBGetter会被调用)
-		context.Header("Content-type", "application/json")
-		context.String(http.StatusOK, cache.GetCache(fmt.Sprintf("news:%s", id)).(string))
+		//context.Header("Content-type", "application/json")
+		//context.String(http.StatusOK, cache.GetCache(fmt.Sprintf("news:%s", id)).(string))
+		news := lib.NewNew()
+		cache.GetCacheForObject(fmt.Sprintf("news:%s", id), news)
+		context.JSON(http.StatusOK, news)
 	})
 
 	_ = r.Run()
